@@ -14,7 +14,83 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lessons: {
+        Row: {
+          completed: boolean
+          duration: number
+          id: string
+          owner_id: string
+          starts_at: string
+          student_id: string
+          subject: string
+          topic: string
+        }
+        Insert: {
+          completed?: boolean
+          duration?: number
+          id?: string
+          owner_id: string
+          starts_at: string
+          student_id: string
+          subject: string
+          topic?: string
+        }
+        Update: {
+          completed?: boolean
+          duration?: number
+          id?: string
+          owner_id?: string
+          starts_at?: string
+          student_id?: string
+          subject?: string
+          topic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      students: {
+        Row: {
+          color: string
+          email: string
+          grade: string
+          id: string
+          name: string
+          notes: string
+          owner_id: string | null
+          school: string
+          subject: string
+        }
+        Insert: {
+          color?: string
+          email?: string
+          grade?: string
+          id?: string
+          name: string
+          notes?: string
+          owner_id?: string | null
+          school?: string
+          subject?: string
+        }
+        Update: {
+          color?: string
+          email?: string
+          grade?: string
+          id?: string
+          name?: string
+          notes?: string
+          owner_id?: string | null
+          school?: string
+          subject?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
