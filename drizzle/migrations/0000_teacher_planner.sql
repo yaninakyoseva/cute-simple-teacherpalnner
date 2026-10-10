@@ -1,0 +1,14 @@
+CREATE TABLE public.students (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), owner_id uuid, name text NOT NULL, grade text NOT NULL DEFAULT '', school text NOT NULL DEFAULT '', subject text NOT NULL DEFAULT '', email text NOT NULL DEFAULT '', notes text NOT NULL DEFAULT '', color text NOT NULL DEFAULT 'pink');
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.students TO authenticated;
+GRANT SELECT ON public.students TO anon;
+GRANT ALL ON public.students TO service_role;
+ALTER TABLE public.students ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Read own or sample students" ON public.students FOR SELECT TO anon, authenticated USING (owner_id IS NULL OR owner_id = auth.uid());
+CREATE POLICY "Manage own students" ON public.students FOR ALL TO authenticated USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid());
+CREATE TABLE public.lessons (id uuid PRIMARY KEY DEFAULT gen_random_uuid(), owner_id uuid NOT NULL, student_id uuid NOT NULL REFERENCES public.students(id) ON DELETE CASCADE, subject text NOT NULL, topic text NOT NULL DEFAULT '', starts_at timestamptz NOT NULL, duration integer NOT NULL DEFAULT 60 CHECK (duration > 0 AND duration <= 480), completed boolean NOT NULL DEFAULT false);
+GRANT SELECT, INSERT, UPDATE, DELETE ON public.lessons TO authenticated;
+GRANT ALL ON public.lessons TO service_role;
+ALTER TABLE public.lessons ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Read own lessons" ON public.lessons FOR SELECT TO authenticated USING (owner_id = auth.uid());
+CREATE POLICY "Manage own lessons" ON public.lessons FOR ALL TO authenticated USING (owner_id = auth.uid()) WITH CHECK (owner_id = auth.uid() AND EXISTS (SELECT 1 FROM public.students s WHERE s.id = student_id AND s.owner_id = auth.uid()));
+INSERT INTO public.students (id,name,grade,school,subject,color) VALUES ('11111111-1111-4111-8111-111111111111','Emma Wilson','Grade 8','Rosewood School','Mathematics','pink'),('22222222-2222-4222-8222-222222222222','Oliver Davis','Grade 6','Maplewood Academy','English','lavender'),('33333333-3333-4333-8333-333333333333','Sofia Martinez','Grade 9','Oakridge School','Biology','sage'),('44444444-4444-4444-8444-444444444444','Liam Thompson','Grade 7','Rosewood School','Mathematics','peach');

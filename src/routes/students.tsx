@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import Planner from '@/components/planner/Planner';
+export const Route = createFileRoute('/students')({head:()=>({meta:[{title:'My students — Petal'},{name:'description',content:'Keep student grades, schools, subjects, and learning notes together in Petal.'},{property:'og:title',content:'My students — Petal'},{property:'og:description',content:'Every student, a new possibility. A personal space for their learning journeys.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:()=> <Planner view="students"/>});
